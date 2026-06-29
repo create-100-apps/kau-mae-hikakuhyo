@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>買う前比較表｜商品・PC・自作パーツを整理する比較メモ</title>
+  <meta name="description" content="買う前に迷っている商品を、価格・スペック・URL・メモごとに整理できる比較表ツール。パソコン、自作PC、ガジェット、家電の候補整理に使えます。" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta property="og:title" content="買う前比較表｜買う前の候補を整理する比較メモ" />
+  <meta property="og:description" content="価格・スペック・URL・メモをまとめて、PC・自作パーツ・ガジェットなどを比較できます。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.example/" />
+  <meta property="og:image" content="https://your-domain.example/ogp.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="買う前比較表｜買う前の候補を整理する比較メモ" />
+  <meta name="twitter:description" content="価格・スペック・URL・メモをまとめて、買う前の候補を整理できます。" />
+  <meta name="twitter:image" content="https://your-domain.example/ogp.png" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">商品比較メモ</p>
+      <h1>買う前比較表</h1>
+      <p class="lead">候補のURL・価格・スペックを、買う前にひとつの表へまとめます。</p>
+    </div>
+    <div class="header-actions">
+      <a class="secondary button-link" href="feedback.html">改善案・バグ報告</a>
+      <button id="exportJsonBtn" class="secondary">データを書き出し</button>
+      <label class="secondary import-label">
+        データを読み込み
+        <input id="importJsonInput" type="file" accept="application/json" hidden>
+      </label>
+      <button id="resetBtn" class="danger ghost">初期化</button>
+    </div>
+  </header>
+
+  <section class="public-intro" aria-label="買う前比較表の概要">
+    <div class="intro-copy">
+      <p class="eyebrow">公開前テスト版</p>
+      <h2>買う前に増えすぎた候補を、1つの比較表にまとめるツールです。</h2>
+      <p>パソコン、自作PC、ガジェット、家電など、迷っている商品の価格・スペック・URL・メモを保存して見比べられます。ログインなしで、このブラウザ内に保存されます。</p>
+      <div class="intro-actions">
+        <a class="primary button-link" href="#productForm">商品を追加する</a>
+        <a class="secondary button-link" href="#dataManagement">バックアップを見る</a>
+      </div>
+    </div>
+    <ol class="quick-steps">
+      <li><span>1</span><strong>比較一覧を作る</strong><small>用途ごとにグループ分けできます。</small></li>
+      <li><span>2</span><strong>ジャンルを選ぶ</strong><small>PC・自作PC・家電などを選択。</small></li>
+      <li><span>3</span><strong>価格とURLを保存</strong><small>あとで商品ページを開けます。</small></li>
+      <li><span>4</span><strong>最安・最高を確認</strong><small>候補を並べて判断できます。</small></li>
+    </ol>
+  </section>
+
+  <main class="layout">
+    <section class="panel form-panel">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">登録</p>
+          <h2>商品を追加</h2>
+        </div>
+        <span id="formModeBadge" class="badge">新規登録</span>
+      </div>
+
+      <div class="sample-notice">
+        <strong>最初はサンプル入りです。</strong>使い方が分かるように、PC比較と自作PC構成の例を入れています。不要なサンプルは編集・削除できます。
+      </div>
+
+      <form id="productForm">
+        <input type="hidden" id="editingId" />
+
+        <label>
+          商品URL
+          <input id="productUrl" type="url" placeholder="https://example.com/item" />
+          <small>あとから商品ページを開けるように保存します。</small>
+        </label>
+
+        <div class="manual-guide">
+          <strong>入力補助</strong>：CPU・GPUなどは段階選択できます。候補にない型番は最後の欄で自由に修正できます。
+        </div>
+
+        <label>
+          商品名
+          <input id="productName" type="text" placeholder="例：Lenovo IdeaPad Slim 5" required />
+        </label>
+
+        <label>
+          ジャンル
+          <div class="split-row">
+            <select id="categorySelect"></select>
+            <button id="newCategoryBtn" type="button" class="secondary compact">追加</button>
+          </div>
+        </label>
+
+        <div class="two-column-form">
+          <label>
+            価格（税込）
+            <input id="productPrice" type="number" min="0" step="1" placeholder="例：89800" />
+          </label>
+
+          <label>
+            自分評価
+            <select id="productRating">
+              <option value="">未評価</option>
+              <option value="5">★★★★★ 5</option>
+              <option value="4">★★★★☆ 4</option>
+              <option value="3">★★★☆☆ 3</option>
+              <option value="2">★★☆☆☆ 2</option>
+              <option value="1">★☆☆☆☆ 1</option>
+            </select>
+          </label>
+        </div>
+
+        <label>
+          画像URL 任意
+          <input id="imageUrl" type="url" placeholder="https://...jpg" />
+        </label>
+
+        <label>
+          状態
+          <select id="productStatus">
+            <option value="候補">候補</option>
+            <option value="本命">本命</option>
+            <option value="保留">保留</option>
+            <option value="買わない">買わない</option>
+          </select>
+        </label>
+
+        <div class="dynamic-specs">
+          <div class="section-heading mini">
+            <h3>比較項目</h3>
+            <button id="editSpecsBtn" type="button" class="secondary compact">項目編集</button>
+          </div>
+          <div id="specFields" class="spec-grid"></div>
+        </div>
+
+        <label>
+          メモ
+          <textarea id="productMemo" rows="4" placeholder="気になる点、保証、レビュー、用途など"></textarea>
+        </label>
+
+        <div class="form-actions">
+          <button type="submit" class="primary">保存する</button>
+          <button id="cancelEditBtn" type="button" class="secondary hidden">編集をやめる</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="section-heading list-heading">
+        <div>
+          <p class="eyebrow">比較</p>
+          <h2>比較一覧</h2>
+        </div>
+        <div class="stats">
+          <span id="itemCount">0件</span>
+          <span id="totalPrice">合計 ¥0</span>
+        </div>
+      </div>
+
+      <div class="group-manager" aria-label="比較一覧グループ管理">
+        <label>
+          比較一覧グループ
+          <select id="groupSelect"></select>
+        </label>
+        <div class="group-actions">
+          <button id="addGroupBtn" type="button" class="secondary compact">新規</button>
+          <button id="renameGroupBtn" type="button" class="secondary compact">名前変更</button>
+          <button id="duplicateGroupBtn" type="button" class="secondary compact">複製</button>
+        </div>
+      </div>
+
+      <div class="summary-grid" id="summaryGrid">
+        <article class="summary-card">
+          <span>最安価格</span>
+          <strong id="minPrice">-</strong>
+        </article>
+        <article class="summary-card">
+          <span>最高価格</span>
+          <strong id="maxPrice">-</strong>
+        </article>
+        <article class="summary-card highlight">
+          <span>最高コスパ</span>
+          <strong id="bestScore">-</strong>
+        </article>
+        <article class="summary-card">
+          <span>本命候補</span>
+          <strong id="favoriteCount">0件</strong>
+        </article>
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="商品名・メモ・スペックで検索" />
+        <select id="filterCategory"></select>
+        <select id="filterStatus">
+          <option value="all">すべての状態</option>
+          <option value="候補">候補</option>
+          <option value="本命">本命</option>
+          <option value="保留">保留</option>
+          <option value="買わない">買わない</option>
+        </select>
+        <select id="sortSelect">
+          <option value="createdDesc">追加が新しい順</option>
+          <option value="scoreDesc">コスパが高い順</option>
+          <option value="priceAsc">価格が安い順</option>
+          <option value="priceDesc">価格が高い順</option>
+          <option value="nameAsc">商品名順</option>
+          <option value="statusAsc">状態順</option>
+        </select>
+        <button id="exportCsvBtn" class="secondary">CSV</button>
+      </div>
+
+      <div class="view-row">
+        <div class="hint-card">
+          <strong>コスパ点数</strong>：価格・評価・入力済みスペックから出す目安です。
+        </div>
+        <div class="view-switch" aria-label="表示切替">
+          <button id="cardViewBtn" class="secondary active" type="button">カード</button>
+          <button id="tableViewBtn" class="secondary" type="button">表</button>
+        </div>
+      </div>
+
+      <div id="dataManagement" class="data-management">
+        <div>
+          <h3>データ管理</h3>
+          <p>入力したデータは、このブラウザ内に保存されます。別端末には自動共有されません。大事な比較表はJSONでバックアップしてください。</p>
+        </div>
+        <div class="data-actions">
+          <button id="exportJsonBtnInline" type="button" class="secondary compact">バックアップを書き出す</button>
+          <label class="secondary import-label compact">
+            バックアップを読み込む
+            <input id="importJsonInputInline" type="file" accept="application/json" hidden>
+          </label>
+        </div>
+      </div>
+
+      <div id="emptyState" class="empty-state">
+        <h3>商品が未登録です</h3>
+        <p>フォームから比較したい商品を追加してください。使い方を試したい場合は、サンプルを入れられます。</p>
+        <button id="loadSampleDataBtn" type="button" class="secondary">サンプルデータを追加</button>
+      </div>
+
+      <div id="cardsGrid" class="cards-grid hidden"></div>
+
+      <div class="table-wrap hidden" id="tableWrap">
+        <table id="productTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="categoryDialog" class="dialog wide-dialog">
+    <form method="dialog" id="categoryForm">
+      <h2>ジャンルを追加</h2>
+      <label>
+        ジャンル名
+        <input id="newCategoryName" type="text" placeholder="例：カメラ" />
+      </label>
+
+      <div class="builder-heading">
+        <div>
+          <h3>比較項目と入力方式</h3>
+          <p class="muted">項目ごとに入力方法を設定できます。</p>
+        </div>
+        <button id="addCategoryFieldBtn" type="button" class="secondary compact">項目を追加</button>
+      </div>
+
+      <div id="categoryFieldBuilder" class="field-builder"></div>
+
+      <div class="hint-card compact-hint">
+        <strong>候補選択：</strong>候補をカンマ区切りか改行で入力します。<br>
+        <strong>段階選択：</strong><code>メーカー &gt; シリーズ &gt; 候補</code> のように1行ずつ入力します。
+      </div>
+
+      <menu>
+        <button value="cancel" class="secondary">キャンセル</button>
+        <button id="saveCategoryBtn" value="default" class="primary">追加</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="specDialog" class="dialog wide-dialog">
+    <form method="dialog" id="specForm">
+      <h2>比較項目を編集</h2>
+      <p id="specDialogCategory" class="muted"></p>
+
+      <div class="builder-heading">
+        <div>
+          <h3>項目設計</h3>
+          <p class="muted">項目名・入力方式・候補・並び順を変更できます。</p>
+        </div>
+        <button id="addSpecFieldBtn" type="button" class="secondary compact">項目を追加</button>
+      </div>
+
+      <div id="specFieldBuilder" class="field-builder"></div>
+
+      <div class="hint-card compact-hint">
+        <strong>自動：</strong>CPUやGPUなど、アプリ側に用意した段階選択を使います。<br>
+        <strong>自由入力：</strong>普通の入力欄になります。<br>
+        <strong>候補から選択：</strong>自分で登録した候補から選べます。<br>
+        <strong>段階選択：</strong><code>NVIDIA &gt; RTX 40シリーズ &gt; RTX 4060</code> のような階層候補を作れます。<br>
+        <strong>順番変更：</strong>各項目の「↑」「↓」で比較表に出す順番を変えられます。
+      </div>
+
+      <menu>
+        <button value="cancel" class="secondary">キャンセル</button>
+        <button id="saveSpecsBtn" value="default" class="primary">保存</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <footer class="app-footer">
+    <div>
+      <strong>買う前比較表</strong>
+      <p>買う前の候補整理に使える、個人向け比較メモツールです。</p>
+    </div>
+    <nav aria-label="フッターリンク">
+      <a href="feedback.html">改善案・バグ報告</a>
+      <a href="terms.html">利用規約</a>
+      <a href="privacy.html">プライバシーポリシー</a>
+    </nav>
+  </footer>
+
+  <template id="specInputTemplate">
+    <label class="spec-field">
+      <span></span>
+      <input type="text" />
+    </label>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
