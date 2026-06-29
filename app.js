@@ -1707,7 +1707,11 @@ let filters = {
   status: "all",
   sort: "createdDesc"
 };
-let viewMode = localStorage.getItem(VIEW_KEY) || "card";
+let viewMode = isMobileViewport() ? "card" : (localStorage.getItem(VIEW_KEY) || "card");
+
+function isMobileViewport() {
+  return window.matchMedia("(max-width: 760px)").matches;
+}
 
 const els = {
   productForm: document.getElementById("productForm"),
@@ -2927,11 +2931,14 @@ function renderSummary(items) {
 
 function renderViewShell(items) {
   const hasItems = items.length > 0;
+  const effectiveMode = isMobileViewport() ? "card" : viewMode;
   els.emptyState.classList.toggle("hidden", hasItems);
-  els.cardsGrid.classList.toggle("hidden", !hasItems || viewMode !== "card");
-  els.tableWrap.classList.toggle("hidden", !hasItems || viewMode !== "table");
-  els.cardViewBtn.classList.toggle("active", viewMode === "card");
-  els.tableViewBtn.classList.toggle("active", viewMode === "table");
+  els.cardsGrid.classList.toggle("hidden", !hasItems || effectiveMode !== "card");
+  els.tableWrap.classList.toggle("hidden", !hasItems || effectiveMode !== "table");
+  els.cardViewBtn.classList.toggle("active", effectiveMode === "card");
+  els.tableViewBtn.classList.toggle("active", effectiveMode === "table");
+  els.tableViewBtn.disabled = isMobileViewport();
+  els.tableViewBtn.setAttribute("aria-disabled", String(isMobileViewport()));
 }
 
 function renderTable(items = getFilteredProducts()) {
@@ -3316,6 +3323,12 @@ function handleRowAction(event) {
 }
 
 function setViewMode(nextMode) {
+  if (isMobileViewport() && nextMode === "table") {
+    viewMode = "card";
+    localStorage.setItem(VIEW_KEY, viewMode);
+    renderProducts();
+    return;
+  }
   viewMode = nextMode;
   localStorage.setItem(VIEW_KEY, viewMode);
   renderProducts();
@@ -3437,3 +3450,14 @@ renderGroupOptions();
 renderCategoryOptions();
 renderSpecFields();
 renderProducts();
+
+const mobileQuery = window.matchMedia("(max-width: 760px)");
+const handleMobileModeChange = () => {
+  if (isMobileViewport()) viewMode = "card";
+  renderProducts();
+};
+if (mobileQuery.addEventListener) {
+  mobileQuery.addEventListener("change", handleMobileModeChange);
+} else if (mobileQuery.addListener) {
+  mobileQuery.addListener(handleMobileModeChange);
+}
