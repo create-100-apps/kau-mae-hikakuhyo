@@ -2076,3 +2076,47 @@ tbody tr:hover td { background: #faf7ef; }
   .quick-steps span { grid-row: auto; }
   button, .import-label, .button-link { width: 100%; }
 }
+
+/* Public release refinements */
+.feedback-methods {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.1rem 0;
+}
+
+.feedback-method-card {
+  border: 1px solid var(--line);
+  background: #f8fbff;
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: var(--shadow-small);
+}
+
+.feedback-method-card h2 {
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+
+.feedback-method-card p {
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 0.8rem;
+}
+
+.feedback-method-card small {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.disabled-link {
+  opacity: 0.55;
+  cursor: not-allowed;
+  filter: grayscale(0.25);
+}
+
+@media (max-width: 720px) {
+  .feedback-methods { grid-template-columns: 1fr; }
+}

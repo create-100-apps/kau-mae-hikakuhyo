@@ -9,45 +9,41 @@
   <meta property="og:title" content="買う前比較表｜買う前の候補を整理する比較メモ" />
   <meta property="og:description" content="価格・スペック・URL・メモをまとめて、PC・自作パーツ・ガジェットなどを比較できます。" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://create-100-apps.github.io/kau-mae-hikakuhyo-public-ready/" />
-  <meta property="og:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo-public-ready/ogp.png" />
+  <meta property="og:url" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/" />
+  <meta property="og:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/ogp.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="買う前比較表｜買う前の候補を整理する比較メモ" />
   <meta name="twitter:description" content="価格・スペック・URL・メモをまとめて、買う前の候補を整理できます。" />
-  <meta name="twitter:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo-public-ready/ogp.png" />
+  <meta name="twitter:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/ogp.png" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="app-header">
     <div>
-      <p class="eyebrow">商品比較メモ</p>
+      <p class="eyebrow">商品・PC・自作パーツの候補整理</p>
       <h1>買う前比較表</h1>
       <p class="lead">候補のURL・価格・スペックを、買う前にひとつの表へまとめます。</p>
     </div>
     <div class="header-actions">
+      <a class="secondary button-link" href="#usageGuide">使い方を見る</a>
       <a class="secondary button-link" href="feedback.html">改善案・バグ報告</a>
-      <button id="exportJsonBtn" class="secondary">データを書き出し</button>
-      <label class="secondary import-label">
-        データを読み込み
-        <input id="importJsonInput" type="file" accept="application/json" hidden>
-      </label>
-      <button id="resetBtn" class="danger ghost">初期化</button>
     </div>
   </header>
 
   <section class="public-intro" aria-label="買う前比較表の概要">
     <div class="intro-copy">
-      <p class="eyebrow">公開前テスト版</p>
+      <p class="eyebrow">買う前の候補整理</p>
       <h2>買う前に増えすぎた候補を、1つの比較表にまとめるツールです。</h2>
       <p>パソコン、自作PC、ガジェット、家電など、迷っている商品の価格・スペック・URL・メモを保存して見比べられます。ログインなしで、このブラウザ内に保存されます。</p>
       <div class="intro-actions">
         <a class="primary button-link" href="#productForm">商品を追加する</a>
-        <a class="secondary button-link" href="#dataManagement">バックアップを見る</a>
+        <a class="secondary button-link" href="#summaryGrid">サンプルを見る</a>
+        <a class="secondary button-link" href="#usageGuide">使い方を見る</a>
       </div>
     </div>
-    <ol class="quick-steps">
-      <li><span>1</span><strong>比較一覧を作る</strong><small>用途ごとにグループ分けできます。</small></li>
+    <ol id="usageGuide" class="quick-steps">
+      <li><span>1</span><strong>比較表を作る</strong><small>用途ごとに分けて管理できます。</small></li>
       <li><span>2</span><strong>ジャンルを選ぶ</strong><small>PC・自作PC・家電などを選択。</small></li>
       <li><span>3</span><strong>価格とURLを保存</strong><small>あとで商品ページを開けます。</small></li>
       <li><span>4</span><strong>最安・最高を確認</strong><small>候補を並べて判断できます。</small></li>
@@ -65,7 +61,7 @@
       </div>
 
       <div class="sample-notice">
-        <strong>最初はサンプル入りです。</strong>使い方が分かるように、PC比較と自作PC構成の例を入れています。不要なサンプルは編集・削除できます。
+        <strong>サンプルで操作を試せます。</strong>はじめて開いた場合は、PC比較と自作PC構成の例が表示されます。空の場合は「サンプルデータを追加」から再表示できます。
       </div>
 
       <form id="productForm">
@@ -152,7 +148,7 @@
       <div class="section-heading list-heading">
         <div>
           <p class="eyebrow">比較</p>
-          <h2>比較一覧</h2>
+          <h2>比較表</h2>
         </div>
         <div class="stats">
           <span id="itemCount">0件</span>
@@ -160,13 +156,13 @@
         </div>
       </div>
 
-      <div class="group-manager" aria-label="比較一覧グループ管理">
+      <div class="group-manager" aria-label="比較表管理">
         <label>
-          比較一覧グループ
+          比較表を選ぶ
           <select id="groupSelect"></select>
         </label>
         <div class="group-actions">
-          <button id="addGroupBtn" type="button" class="secondary compact">新規</button>
+          <button id="addGroupBtn" type="button" class="secondary compact">新しい比較表</button>
           <button id="renameGroupBtn" type="button" class="secondary compact">名前変更</button>
           <button id="duplicateGroupBtn" type="button" class="secondary compact">複製</button>
         </div>
@@ -233,6 +229,7 @@
             バックアップを読み込む
             <input id="importJsonInputInline" type="file" accept="application/json" hidden>
           </label>
+          <button id="resetBtn" type="button" class="danger ghost compact">すべて初期化</button>
         </div>
       </div>
 

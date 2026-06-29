@@ -1,5 +1,6 @@
 const STORAGE_KEY = "hikaku_com_state_v1";
 const VIEW_KEY = "hikaku_com_view_mode_v2";
+const SAMPLE_OPT_OUT_KEY = "kau_mae_hikakuhyo_sample_opt_out_v1";
 const SELF_BUILD_CATEGORY = "自作パソコン";
 const PC_SPEC_NAMES = ["CPU", "GPU", "メモリ", "ストレージ", "画面サイズ", "重量", "バッテリー", "電源", "OS", "保証"];
 const SELF_BUILD_SPEC_NAMES = ["CPU", "GPU", "マザーボード", "メモリ", "ストレージ", "画面サイズ", "重量", "電源", "OS", "保証"];
@@ -1889,6 +1890,16 @@ function ensureActiveGroup() {
   state.activeGroupId = activeGroupId;
 }
 
+function seedSamplesIfEmpty() {
+  const hasProducts = Array.isArray(state.products) && state.products.length > 0;
+  const optedOut = localStorage.getItem(SAMPLE_OPT_OUT_KEY) === "1";
+  if (hasProducts || optedOut) return;
+
+  ensureActiveGroup();
+  state.products = sampleProducts(activeGroupId);
+  saveState();
+}
+
 function createGroupName(base = "比較一覧") {
   let index = state.groups.length + 1;
   let name = `${base}${index}`;
@@ -3233,6 +3244,7 @@ function addSampleDataToActiveGroup() {
   const existingCount = state.products.filter(product => product.groupId === activeGroup.id).length;
   if (existingCount > 0 && !confirm("現在の比較一覧にサンプルデータを追加しますか？")) return;
 
+  localStorage.removeItem(SAMPLE_OPT_OUT_KEY);
   state.products.unshift(...sampleProducts(activeGroup.id));
   saveState();
   renderAll();
@@ -3386,9 +3398,9 @@ function bindEvents() {
   els.duplicateGroupBtn.addEventListener("click", duplicateGroup);
 
   els.exportCsvBtn.addEventListener("click", exportCsv);
-  els.exportJsonBtn.addEventListener("click", exportJson);
+  els.exportJsonBtn?.addEventListener("click", exportJson);
 
-  els.importJsonInput.addEventListener("change", event => {
+  els.importJsonInput?.addEventListener("change", event => {
     const file = event.target.files?.[0];
     if (file) importJson(file);
     event.target.value = "";
@@ -3406,6 +3418,7 @@ function bindEvents() {
 
   els.resetBtn.addEventListener("click", () => {
     if (!confirm("すべての登録データを削除して初期状態に戻しますか？")) return;
+    localStorage.setItem(SAMPLE_OPT_OUT_KEY, "1");
     state = createInitialState(false);
     activeGroupId = state.activeGroupId;
     saveState();
@@ -3416,6 +3429,7 @@ function bindEvents() {
 }
 
 ensureActiveGroup();
+seedSamplesIfEmpty();
 state.activeGroupId = activeGroupId;
 saveState();
 bindEvents();

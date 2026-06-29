@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>改善案・バグ報告｜買う前比較表</title>
-  <meta name="description" content="買う前比較表の改善案・バグ報告ページです。" />
+  <meta name="description" content="買う前比較表の改善案・バグ報告ページです。フォームまたはXからフィードバックできます。" />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -13,7 +13,22 @@
     <article class="static-card feedback-box">
       <p class="eyebrow">Feedback</p>
       <h1>改善案・バグ報告</h1>
-      <p>使いにくいところ、欲しい機能、表示崩れなどがあれば、下のテンプレートを編集して共有してください。</p>
+      <p>使いにくいところ、欲しい機能、表示崩れなどがあれば共有してください。フォームURLを設定している場合は、フォームから送れます。</p>
+
+      <div class="feedback-methods" aria-label="フィードバック方法">
+        <section class="feedback-method-card">
+          <h2>フォームで送る</h2>
+          <p>Googleフォームを設定すると、このボタンから感想・バグ報告を送れるようになります。</p>
+          <a id="googleFormLink" class="primary button-link disabled-link" href="#" target="_blank" rel="noopener" aria-disabled="true">フォームで送る</a>
+          <small id="formSetupHint">現在はフォームURLが未設定です。運営者は feedback.html の <code>GOOGLE_FORM_URL</code> にGoogleフォームURLを入れてください。</small>
+        </section>
+
+        <section class="feedback-method-card">
+          <h2>Xで共有する</h2>
+          <p>下のテンプレートを編集して、Xで共有できます。コピーだけでもできます。</p>
+          <a id="xFeedbackLink" class="secondary button-link" href="https://x.com/intent/tweet?text=%E3%80%90%E8%B2%B7%E3%81%86%E5%89%8D%E6%AF%94%E8%BC%83%E8%A1%A8%20%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%83%90%E3%83%83%E3%82%AF%E3%80%91%0A%0A%23%E8%B2%B7%E3%81%86%E5%89%8D%E6%AF%94%E8%BC%83%E8%A1%A8" target="_blank" rel="noopener">Xで共有する</a>
+        </section>
+      </div>
 
       <label>
         報告テンプレート
@@ -31,21 +46,35 @@
 
       <div class="static-actions">
         <button id="copyFeedbackBtn" type="button" class="secondary">テンプレートをコピー</button>
-        <a id="xFeedbackLink" class="primary button-link" href="https://x.com/intent/tweet?text=%E3%80%90%E8%B2%B7%E3%81%86%E5%89%8D%E6%AF%94%E8%BC%83%E8%A1%A8%20%E3%83%95%E3%82%A3%E3%83%BC%E3%83%89%E3%83%90%E3%83%83%E3%82%AF%E3%80%91%0A%0A%23%E8%B2%B7%E3%81%86%E5%89%8D%E6%AF%94%E8%BC%83%E8%A1%A8" target="_blank" rel="noopener">Xで共有する</a>
         <a class="secondary button-link" href="index.html">アプリに戻る</a>
       </div>
     </article>
   </main>
 
   <script>
+    const GOOGLE_FORM_URL = "https://forms.gle/kt8t9keZ71b588pU9"; 
+
     const textarea = document.getElementById('feedbackText');
     const copyBtn = document.getElementById('copyFeedbackBtn');
     const xLink = document.getElementById('xFeedbackLink');
+    const googleFormLink = document.getElementById('googleFormLink');
+    const formSetupHint = document.getElementById('formSetupHint');
+
+    if (GOOGLE_FORM_URL) {
+      googleFormLink.href = GOOGLE_FORM_URL;
+      googleFormLink.classList.remove('disabled-link');
+      googleFormLink.removeAttribute('aria-disabled');
+      formSetupHint.textContent = 'フォームから送信できます。';
+    }
 
     function updateXLink() {
       const text = textarea.value.trim() || '【買う前比較表 フィードバック】';
       xLink.href = `https://x.com/intent/tweet?text=${encodeURIComponent(text + '\n\n#買う前比較表')}`;
     }
+
+    googleFormLink.addEventListener('click', event => {
+      if (!GOOGLE_FORM_URL) event.preventDefault();
+    });
 
     textarea.addEventListener('input', updateXLink);
     copyBtn.addEventListener('click', async () => {

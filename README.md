@@ -3,7 +3,7 @@
 買う前に迷っている商品を、価格・スペック・URL・メモごとに整理できる比較表ツールです。
 パソコン、自作PC、ガジェット、家電などの候補整理に使えます。
 
-## 今回の公開前仕上げで追加したこと
+## 今回の公開前改善で追加・修正したこと
 
 1. トップ画面に「何のサイトか」が分かる説明を追加
 2. 4ステップの使い方ガイドを追加
@@ -17,29 +17,47 @@
 10. 利用規約 `terms.html` とプライバシーポリシー `privacy.html` を追加
 11. favicon `favicon.svg` を追加
 
-## 使い方
 
-`index.html` をブラウザで開くだけで使えます。サーバー起動は不要です。
+## 今回の追加改善
 
-## サーバー公開前に必ず変更するところ
+1. 「公開前テスト版」の表記を削除し、自然な説明文に変更
+2. サンプル表示の矛盾を修正。保存データが空の初回状態ではサンプルを自動表示
+3. 上部ボタンを整理。バックアップ・初期化は「データ管理」に集約
+4. 「商品比較メモ」表記を減らし、サービス名を「買う前比較表」に統一
+5. 「比較一覧グループ」を「比較表」に近い表現へ変更
+6. フィードバックページにフォーム導線を追加
 
-`index.html` の `<head>` 内にある以下のURLを、自分の公開URLに変更してください。
+### Googleフォームを使う場合
 
-```html
-<meta property="og:url" content="https://your-domain.example/" />
-<meta property="og:image" content="https://your-domain.example/ogp.png" />
-<meta name="twitter:image" content="https://your-domain.example/ogp.png" />
+`feedback.html` の中にある以下を書き換えてください。
+
+```js
+const GOOGLE_FORM_URL = "";
 ```
 
 例：
 
-```html
-<meta property="og:url" content="https://example.com/" />
-<meta property="og:image" content="https://example.com/ogp.png" />
-<meta name="twitter:image" content="https://example.com/ogp.png" />
+```js
+const GOOGLE_FORM_URL = "https://forms.gle/xxxxxxxxxxxxxx";
 ```
 
-XでURLを貼ったときに画像を表示するには、`ogp.png` が公開URLから見える状態になっている必要があります。
+GoogleフォームURLを入れると、フィードバックページの「フォームで送る」ボタンが有効になります。
+
+## 使い方
+
+`index.html` をブラウザで開くだけで使えます。サーバー起動は不要です。
+
+## 公開URL設定
+
+現在のOGP URLは以下に設定済みです。
+
+```html
+<meta property="og:url" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/" />
+<meta property="og:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/ogp.png" />
+<meta name="twitter:image" content="https://create-100-apps.github.io/kau-mae-hikakuhyo/ogp.png" />
+```
+
+公開URLを変えた場合は、上記も変更してください。XでURLを貼ったときに画像を表示するには、`ogp.png` が公開URLから見える状態になっている必要があります。
 
 ## データ保存について
 
